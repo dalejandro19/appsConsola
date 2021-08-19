@@ -1,5 +1,6 @@
 package appConsola;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
@@ -16,20 +17,49 @@ public class Main {
 		cubeta.menu();
 	}
 
-	public void menu() {
-		String cantPelotas, limValor, opcionMenu;
-		/*
-		 * Scanner scan; scan = new Scanner(System.in); cantPelotas = scan.nextInt();
-		 * System.out.println(cantPelotas); scan.close();
-		 */
-		System.out.println(
-				"--------------MENU DE OPCIONES--------------\n1. Ingreso manual de numeros\n2. Ingreso aleatorio");
+	public void limpiar() {
+		try {
+			new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+		} catch (InterruptedException | IOException e) {
+			e.printStackTrace();
+		}
+	}
 
-		/*
-		 * VALIDACION PARA LA CANTIDAD DE PELOTAS do {
-		 * 
-		 * }while();
-		 */
+	public void menu() {
+		String strOpcionMenu;
+		Scanner scan = new Scanner(System.in);
+		// strCantPelotas, strLimValor,
+		// cantPelotas, limValor,
+
+		// ENTRADA DE LA OPCION
+		do {
+			System.out.println("--------------MENU DE OPCIONES--------------"
+					+ "\n1. Ingreso manual de numeros\n2. Ingreso aleatorio\n3. Salir");
+			strOpcionMenu = scan.next();
+		} while (validacion(strOpcionMenu) == false);
+
+		// MENU
+		switch (Integer.parseInt(strOpcionMenu)) {
+		case 1:
+
+			System.out.println("HOLA MUNDO");
+			break;
+
+		case 3:
+			System.exit(0);
+			break;
+
+		default:
+			menu();
+			break;
+		}
+		scan.close();
+	}
+
+	public Object conversionDato(String cadena) {
+		int dato;
+		dato = Integer.parseInt(cadena);
+		return dato;
 	}
 
 	public boolean validacion(String cadena) {
@@ -38,7 +68,16 @@ public class Main {
 			return true;
 		} catch (Exception e) {
 			System.out.println("ERROR 404");
+			tiempoEspera();
 			return false;
+		}
+	}
+
+	public void tiempoEspera() {
+		try {
+			Thread.sleep(2 * 1000);
+		} catch (Exception e) {
+			System.out.println(e);
 		}
 	}
 }
