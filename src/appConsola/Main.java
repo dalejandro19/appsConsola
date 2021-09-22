@@ -1,6 +1,7 @@
 package appConsola;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Scanner;
 
 public class Main {
@@ -17,6 +18,7 @@ public class Main {
 		cubeta.menu();
 	}
 
+	// ACCIONES
 	public void limpiar() {
 		try {
 			new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
@@ -25,71 +27,12 @@ public class Main {
 		}
 	}
 
-	public void menu() {
-		String strOpcionMenu;
-		Scanner scan = new Scanner(System.in);
-		// strCantPelotas, strLimValor,
-		// cantPelotas, limValor,
-
-		// ENTRADA DE LA OPCION
-		do {
-			System.out.println("--------------MENU DE OPCIONES--------------"
-					+ "\n1. Ingreso manual de numeros\n2. Ingreso aleatorio\n3. Salir");
-			strOpcionMenu = scan.next();
-		} while (validacion(strOpcionMenu) == false);
-
-		// MENU
-		switch (conversionDato(strOpcionMenu)) {
-		case 1:
-			System.out.println("PRIMERA PARTE");
-			generadorCubetas();
-			break;
-
-		case 3:
-			System.exit(0);
-			break;
-
-		default:
-			menu();
-			break;
+	public void tiempoEspera() {
+		try {
+			Thread.sleep(2 * 1000);
+		} catch (Exception e) {
+			System.out.println(e);
 		}
-		scan.close();
-	}
-
-	public void generadorCubetas() {
-		String strCantidadPelotas, strValorLimite, strNumeroPelota;
-		int cantidadPelotas, valorLimite, numeroPelota;
-		Scanner scan = new Scanner(System.in);
-
-		// LIMPIAR CONSOLA
-		do {
-			System.out.println("Ingrese la cantidad de pelotas a ingresar en la cubeta");
-			strCantidadPelotas = scan.next();
-		} while (validacion(strCantidadPelotas) == false);
-
-		// LIMPIAR CONSOLA
-		do {
-			System.out.println("Ingrese el valor limite para las pelotas\nNOTA: Debe ser mayor a cero");
-			strValorLimite = scan.next();
-		} while (validacion(strValorLimite) == false);
-
-		cantidadPelotas = conversionDato(strCantidadPelotas);
-		valorLimite = conversionDato(strValorLimite);
-
-		if (valorLimite < 0 || (cantidadPelotas > 100 || cantidadPelotas <= 0)) {
-			System.out.println("ERROR: INGRESE LOS VALORES NUEVAMENTE");
-			tiempoEspera();
-			generadorCubetas();
-		} else {
-			System.out.println("CANTIDAD DE PELOTAS: " + cantidadPelotas + " - VALOR LIMITE:" + valorLimite);
-		}
-
-	}
-
-	public int conversionDato(String cadena) {
-		int dato;
-		dato = Integer.parseInt(cadena);
-		return dato;
 	}
 
 	public boolean validacion(String cadena) {
@@ -103,11 +46,118 @@ public class Main {
 		}
 	}
 
-	public void tiempoEspera() {
-		try {
-			Thread.sleep(2 * 1000);
-		} catch (Exception e) {
-			System.out.println(e);
+	public int conversionDato(String cadena) {
+		int dato;
+		dato = Integer.parseInt(cadena);
+		return dato;
+	}
+
+	public void menu() {
+		String strOpcion;
+		int opcion;
+		Scanner scan = new Scanner(System.in);
+
+		do {
+			// ENTRADA DE LA OPCION
+			do {
+				System.out.println("--------------ORDENADOR DE CUBETAS--------------"
+						+ "\n1. GENRADOR MANUAL\n2. GENERADOR ALEATORIO\n3. SALIR");
+				strOpcion = scan.next();
+			} while (validacion(strOpcion) == false);
+			opcion = conversionDato(strOpcion);
+
+			// MENU
+			switch (opcion) {
+			case 1:
+				System.out.println("PRIMERA PARTE");
+				// generarCubetas();
+				break;
+
+			case 2:
+				cubetas(1, 8, 5);
+				break;
+
+			case 3:
+				System.exit(0);
+				break;
+
+			default:
+				menu();
+				break;
+			}
+		} while (opcion != 3);
+	}
+
+	public void generarCubetas() {
+		int numMayor, cantPelotas;
+
+		// limpiar();
+		numMayor = numeroMayor();
+		cantPelotas = cantidadPelotas();
+
+		if (numMayor < 0 || (cantPelotas > 100 || cantPelotas <= 0)) {
+			System.out.println("ERROR: INGRESE LOS VALORES NUEVAMENTE");
+			tiempoEspera();
+			menu();
+		} else {
+			System.out.println("CANTIDAD DE PELOTAS: " + cantPelotas + " - VALOR LIMITE:" + numMayor);
+		}
+
+	}
+
+	public int numeroMayor() {
+		int resultado;
+		String strNumero;
+
+		// SCANNER PARA ENTRADA DE DATOS
+		Scanner scan = new Scanner(System.in);
+
+		// VALIDACION
+		do {
+			System.out.println("INGRESE EL NUMERO LIMITE DEL VALOR DE LAS PELOTAS\nNOTA: DEBE SER MAYOR A CERO");
+			strNumero = scan.next();
+		} while (validacion(strNumero) == false);
+
+		resultado = conversionDato(strNumero);
+		return resultado;
+	}
+
+	public int cantidadPelotas() {
+		int resultado;
+		String strCantidad;
+
+		// SCANNER PARA ENTRADA DE DATOS
+		Scanner scan = new Scanner(System.in);
+
+		// VALIDACION
+		do {
+			System.out.println("INGRESE LA CANTIDAD DE PELOTAS QUE DESEA EN LA CUBETA");
+			strCantidad = scan.next();
+		} while (validacion(strCantidad) == false);
+
+		resultado = conversionDato(strCantidad);
+		return resultado;
+	}
+
+	public void cubetas(int metodo, int numMayor, int cantPelotas) {
+		Scanner scan = new Scanner(System.in);
+
+		int[] num = new int[cantPelotas];
+		int[] contar = new int[cantPelotas + 1];
+
+		if (metodo == 1) {
+			for (int i = 0; i < cantPelotas; i++) {
+				num[i] = scan.nextInt();
+			}
+
+			for (int j = 0; j < cantPelotas; j++) {
+				contar[num[j]] += 1;
+			}
+
+			for (int i = 0; i < numMayor; i++) {
+				System.out.println("#: " + (i + 1) + " repite: " + contar[i + 1]);
+			}
 		}
 	}
+
 }
